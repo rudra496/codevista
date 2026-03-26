@@ -84,6 +84,28 @@ def main():
     p.add_argument('--threshold', type=int, default=10, help='Complexity warning threshold')
     p.add_argument('--top', type=int, default=20, help='Number of top functions to show')
 
+    # smells — code smell detection
+    p = sub.add_parser('smells', help='Detect code smells and anti-patterns')
+    p.add_argument('path', nargs='?', default='.', help='Project directory')
+    p.add_argument('--json', action='store_true', help='Output raw JSON')
+
+    # architecture — architecture pattern detection
+    p = sub.add_parser('architecture', help='Detect architecture patterns and structure')
+    p.add_argument('path', nargs='?', default='.', help='Project directory')
+
+    # code-age — code age and risk analysis
+    p = sub.add_parser('code-age', help='Analyze file age, change frequency, and risk')
+    p.add_argument('path', nargs='?', default='.', help='Project directory')
+
+    # export — export report in various formats
+    p = sub.add_parser('export', help='Export analysis in various formats')
+    p.add_argument('path', nargs='?', default='.', help='Project directory')
+    p.add_argument('-f', '--format', default='markdown',
+                   choices=['html', 'json', 'markdown', 'sarif', 'csv', 'yaml', 'pdf'],
+                   help='Export format')
+    p.add_argument('-o', '--output', default='codevista-report', help='Output file path (no extension)')
+    p.add_argument('--all', action='store_true', help='Export to all formats')
+
     args = parser.parse_args()
 
     if not args.command:
@@ -102,6 +124,10 @@ def main():
         'git-stats': cmd_git_stats,
         'languages': cmd_languages,
         'complexity': cmd_complexity,
+        'smells': cmd_smells,
+        'architecture': cmd_architecture,
+        'code-age': cmd_code_age,
+        'export': cmd_export,
     }
 
     handler = command_map.get(args.command)
@@ -494,6 +520,87 @@ def cmd_complexity(args):
         print(f"  {cc_color} {i:>2d} {f['name']:<35s} {f['complexity']:>4d} {f.get('cognitive_complexity',0):>5d} {f.get('nesting_depth',0):>5d} {f.get('param_count',0):>6d} {f['line_count']:>5d}  .../{f.get('file','').split('/')[-1] if f.get('file') else ''}")
 
     print(f"{'─'*70}")
+
+
+# ── New Commands ──────────────────────────────────────────────────────────
+
+def cmd_smells(args):
+    from .smells import detect_code_smells, format_smells_terminal, generate_smell_recommendations
+
+    path = _resolve_path(args.path)
+    print(f"👃 Detecting code smells in {path}...")
+    start = time.time()
+    smell_data = detect_code_smells(path)
+    elapsed = time.time() - start
+
+    if args.json:
+        import json
+        print(json.dumps(smell_data, indent=2, default=str))
+        return
+
+    print(format_smells_terminal(smell_data))
+    print(f"  ⏱️  Completed in {elapsed:.2f}s")
+
+    recs = generate_smell_recommendations(smell_data)
+    if recs:
+        print(f"\n  💡 Recommendations:")
+        for r in recs:
+            print(f"    {r['icon']} [{r['priority'].upper()}] {r['message']}")
+
+
+def cmd_architecture(args):
+    from .architecture import detect_architecture, format_architecture_terminal
+
+    path = _resolve_path(args.path)
+    print(f"🏗️  Analyzing architecture of {path}...")
+    start = time.time()
+    arch_data = detect_architecture(path)
+    elapsed = time.time() - start
+
+    print(format_architecture_terminal(arch_data))
+    print(f"  ⏱️  Completed in {elapsed:.2f}s")
+
+
+def cmd_code_age(args):
+    from .code_age import analyze_code_age, format_code_age_terminal, generate_age_recommendations
+
+    path = _resolve_path(args.path)
+    print(f"📅 Analyzing code age in {path}...")
+    start = time.time()
+    age_data = analyze_code_age(path)
+    elapsed = time.time() - start
+
+    print(format_code_age_terminal(age_data))
+    print(f"  ⏱️  Completed in {elapsed:.2f}s")
+
+    recs = generate_age_recommendations(age_data)
+    if recs:
+        print(f"\n  💡 Recommendations:")
+        for r in recs:
+            print(f"    {r['icon']} [{r['priority'].upper()}] {r['message']}")
+
+
+def cmd_export(args):
+    from .analyzer import analyze_project
+    from .export import export_report, export_all
+
+    path = _resolve_path(args.path)
+    print(f"📤 Analyzing {path} and exporting...")
+
+    if args.all:
+        analysis = analyze_project(path)
+        results = export_all(analysis, os.path.abspath(args.output))
+        print(f"\n✅ Exported to all formats:")
+        for fmt, filepath in results.items():
+            print(f"  • {fmt}: {filepath}")
+    else:
+        start = time.time()
+        analysis = analyze_project(path)
+        output_path = os.path.abspath(args.output)
+        filepath = export_report(analysis, output_path, format=args.format)
+        elapsed = time.time() - start
+        print(f"\n✅ Exported {args.format} report: {filepath}")
+        print(f"  ⏱️  Completed in {elapsed:.2f}s")
 
 
 # ── Helpers ────────────────────────────────────────────────────────────────

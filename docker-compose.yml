@@ -1,0 +1,6 @@
+services:
+  codevista:
+    build: .
+    volumes:
+      - ./:/workspace
+    command: analyze /workspace --depth 5
