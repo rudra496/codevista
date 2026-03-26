@@ -65,6 +65,8 @@ Zero external dependencies — pure Python stdlib.
 | `codevista diff-snapshots ./project/ 1 2` | Compare two snapshots |
 | `codevista team ./project/` | Team productivity & collaboration analysis |
 | `codevista ci-output ./project/ -f sarif` | CI/CD output (SARIF, Checkstyle, etc.) |
+| `codevista decay ./project/` | Architectural decay analysis |
+| `codevista dna ./project/` | Generate CodeDNA fingerprint |
 
 ## 📊 What It Analyzes
 
@@ -249,6 +251,115 @@ codevista team ./my-project/
 | **Time Zone Distribution** | When the team commits |
 | **Onboarding Complexity** | How hard for a new contributor to ramp up |
 
+### 🏚️ Architectural Decay Detector
+Track how your codebase degrades over time using git history. Detects growing complexity, increasing coupling, code duplication, and predicts future state.
+
+```bash
+codevista decay ./my-project/
+```
+
+**What it analyzes:**
+
+| Metric | Description |
+|--------|-------------|
+| **Complexity Growth** | How cyclomatic complexity changes across commits |
+| **Coupling Growth** | How module interdependencies grow over time |
+| **Duplication Growth** | Code duplication ratio changes |
+| **Debt Velocity** | Technical debt accumulation rate per week |
+| **Decay Hotspots** | Files degrading fastest (ranked by decay score) |
+| **Predictions** | Linear regression forecasts for 12 weeks ahead |
+| **Inflection Points** | Key commits where quality shifted significantly |
+| **Interventions** | Prioritized refactoring recommendations |
+
+**ASCII Report Example:**
+
+```
+  ╔═══════════════════════════════════════════════════════════╗
+  ║          🏚️  ARCHITECTURAL DECAY ANALYSIS                 ║
+  ╠═══════════════════════════════════════════════════════════╣
+  ║  Repository: my-project                                    ║
+  ║  Is Git:     Yes                                          ║
+  ╚═══════════════════════════════════════════════════════════╝
+
+  📈 COMPLEXITY GROWTH
+  ────────────────────────────────────────────────────────
+    2026-01-15  avg CC:   8.2  [████░░░░░░░░░░░░░░░░░░]
+    2026-02-01  avg CC:   9.5  [█████░░░░░░░░░░░░░░░░░]
+    2026-02-15  avg CC:  11.3  [██████░░░░░░░░░░░░░░░░]
+    2026-03-01  avg CC:  13.8  [████████░░░░░░░░░░░░░░]
+    Trend: 📈 GROWING
+
+  🔥 DECAY HOTSPOTS (top 10)
+  ────────────────────────────────────────────────────────
+    🔴  1.  45.2 [████████████████████░░] src/core/engine.py
+    🟠  2.  28.7 [█████████████░░░░░░░░░] src/api/handler.js
+    🟡  3.  12.4 [██████░░░░░░░░░░░░░░░░] src/utils/parser.py
+
+  🔮 PREDICTIONS (12 weeks forward)
+  ────────────────────────────────────────────────────────
+    Avg complexity:   18.5
+    Debt lines:       2450
+    Confidence:       moderate
+
+  💡 RECOMMENDED INTERVENTIONS
+  ────────────────────────────────────────────────────────
+    🔴 [CRITICAL] src/core/engine.py
+       Action: refactor
+       break into smaller functions/modules; stabilize — changes are volatile
+```
+
+### 🧬 CodeDNA Fingerprinter
+Create unique DNA fingerprints for codebases — identify projects, detect forks, spot cloned code.
+
+```bash
+# Generate fingerprint with ASCII barcode
+codevista dna ./my-project/
+
+# Save fingerprint for later comparison
+codevista dna ./my-project/ --save fingerprint.json
+
+# Compare two projects
+codevista dna ./project-a/ --compare fingerprint.json
+
+# Detect cloned files
+codevista dna ./my-project/ --clones
+```
+
+**What it captures:**
+
+| Component | Description |
+|-----------|-------------|
+| **Hash Patterns** | SHA-based profile of code structure patterns |
+| **Language Distribution** | Language mix signature |
+| **Complexity Distribution** | Complexity bucket fingerprint |
+| **Dependency Topology** | Import graph topology hash |
+| **Naming Conventions** | camelCase/snake_case/PascalCase ratios |
+| **Comment Density** | Documentation coverage fingerprint |
+| **Function Size** | Function size distribution |
+| **File Size** | File size distribution |
+| **Clone Detection** | Exact and near-clone detection via block hashing |
+
+**Barcode Example:**
+
+```
+  ┌─────────────────────────────────────────────────────┐
+  │              🧬 CodeDNA Barcode                     │
+  ├─────────────────────────────────────────────────────┤
+  │  ▓▓▒▒░░████▓▓▒░████░▒▒▓▓████░░▒▒▓▓░░████▒▒░░████│
+  │  ██▓▓░░▒▒████░░▓▓██▒▒░░▓▓▒▒████░░▓▓██▒▒░░▓▓▒▒░░░│
+  │  ░░▒▒██▓▓░░▒▒████░░▓▓██▒▒████░░▓▓░░▒▒████░░▓▓██▓▓│
+  │  ░░████░░▓▓▒▒██▓▓░░▒▒████░░▓▓░░████░░▒▒██▓▓░░▒▒░░│
+  ├─────────────────────────────────────────────────────┤
+  │  Project: my-project                    files:   42│
+  │  Languages: Python 45.2%, JS 30.1%, HTML 15.3%    │
+  │  Naming: snake_case                                   │
+  │  Hash: a3f7c2b1e9d04586                              │
+  └─────────────────────────────────────────────────────┘
+
+  Compact: [█████░░████░░░░████████░░██░░░░████░░████░░]
+  a3f7c2b1e9d045867f2a9c3d1e8b4f6a...
+```
+
 ## 📤 Export Formats
 
 Export analysis results in multiple formats for different use cases:
@@ -395,6 +506,8 @@ codevista/
 ├── trends.py         # Trend analysis & snapshot tracking
 ├── team.py           # Team metrics & collaboration analysis
 ├── integrations.py   # CI/CD output (SARIF, Checkstyle, JUnit, GitLab)
+├── decay.py          # Architectural decay detector
+├── codedna.py        # CodeDNA fingerprinter
 ├── languages.py      # Language definitions & colors
 ├── config.py         # Configuration & ignore patterns
 ├── utils.py          # Utilities & color schemes

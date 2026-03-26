@@ -3,7 +3,7 @@
 Commands: analyze, quick, serve, compare, watch, health,
 security, deps, git-stats, languages, complexity, smells,
 architecture, code-age, export, snapshot, trends,
-diff-snapshots, team, ci-output.
+diff-snapshots, team, ci-output, decay, dna.
 """
 
 import argparse
@@ -131,7 +131,20 @@ def main():
     p = sub.add_parser('team', help='Team productivity and collaboration analysis')
     p.add_argument('path', nargs='?', default='.', help='Project directory')
 
-    # ci-output — CI/CD output formats
+    # decay — architectural decay analysis
+    p = sub.add_parser('decay', help='Architectural decay analysis')
+    p.add_argument('path', nargs='?', default='.', help='Project directory')
+    p.add_argument('--since', type=int, default=90, help='Days of history to analyze')
+    p.add_argument('--json', action='store_true', help='Output raw JSON')
+
+    # dna — CodeDNA fingerprint
+    p = sub.add_parser('dna', help='Generate CodeDNA fingerprint')
+    p.add_argument('path', nargs='?', default='.', help='Project directory')
+    p.add_argument('--save', type=str, default=None, help='Save fingerprint to JSON file')
+    p.add_argument('--compare', type=str, default=None, help='Compare with saved fingerprint')
+    p.add_argument('--clones', action='store_true', help='Detect cloned files')
+
+    # ci-output — CI/CD output (SARIF, Checkstyle, JUnit, etc.)
     p = sub.add_parser('ci-output', help='CI/CD output (SARIF, Checkstyle, JUnit, etc.)')
     p.add_argument('path', nargs='?', default='.', help='Project directory')
     p.add_argument('-f', '--format', default='sarif',
@@ -167,6 +180,8 @@ def main():
         'trends': cmd_trends,
         'diff-snapshots': cmd_diff_snapshots,
         'team': cmd_team,
+        'decay': cmd_decay,
+        'dna': cmd_dna,
         'ci-output': cmd_ci_output,
     }
 
@@ -799,6 +814,122 @@ def cmd_ci_output(args):
     print(f"  ⏱️  Completed in {elapsed:.2f}s")
 
     sys.exit(exit_code)
+
+
+# ── Decay & DNA Commands ──────────────────────────────────────────────────
+
+def cmd_decay(args):
+    from .decay import DecayDetector
+
+    path = _resolve_path(args.path)
+    print(f"🏚️  Analyzing architectural decay in {path}...")
+    start = time.time()
+
+    detector = DecayDetector(path)
+    if not detector.is_git:
+        print("❌ Not a git repository. Decay analysis requires git history.")
+        sys.exit(1)
+
+    if args.json:
+        import json
+        result = {
+            "complexity_growth": detector.calculate_complexity_growth(),
+            "coupling_growth": detector.calculate_coupling_growth(),
+            "duplication_growth": detector.calculate_duplication_growth(),
+            "debt_velocity": detector.calculate_debt_velocity(),
+            "hotspots": detector.identify_decay_hotspots(),
+            "predictions": detector.predict_future_state(),
+            "inflection_points": detector.generate_decay_timeline(),
+            "interventions": detector.suggest_interventions(),
+        }
+        print(json.dumps(result, indent=2, default=str))
+    else:
+        report = detector.generate_report()
+        print(report)
+
+    elapsed = time.time() - start
+    print(f"  ⏱️  Completed in {elapsed:.2f}s")
+
+
+def cmd_dna(args):
+    from .codedna import CodeDNA
+
+    path = _resolve_path(args.path)
+    print(f"🧬 Generating CodeDNA fingerprint for {path}...")
+    start = time.time()
+
+    dna = CodeDNA(path)
+    fingerprint = dna.generate_fingerprint()
+
+    # Print barcode
+    barcode = dna.generate_barcode()
+    print(barcode)
+
+    # Print summary
+    print(f"\n  {'─'*55}")
+    print(f"  🧬 CodeDNA Fingerprint Summary")
+    print(f"  {'─'*55}")
+
+    # Languages
+    lang_dist = fingerprint.get("language_distribution", {})
+    print(f"  🧩 Languages: {len(lang_dist)} detected")
+    for lang, info in sorted(lang_dist.items(), key=lambda x: -(x[1].get('percentage', 0) if isinstance(x[1], dict) else x[1]))[:5]:
+        pct = info.get('percentage', 0) if isinstance(info, dict) else 0
+        lines = info.get('lines', 0) if isinstance(info, dict) else 0
+        print(f"     {lang:<20s} {pct:>5.1f}%  ({lines:,} lines)")
+
+    # Naming
+    naming = fingerprint.get("naming_conventions", {})
+    if isinstance(naming, dict):
+        print(f"  📝 Naming: {naming.get('dominant', 'unknown')}")
+        ratios = naming.get("ratios", {})
+        for style, pct in ratios.items():
+            bar = '█' * int(pct / 5)
+            print(f"     {style:<15s} {pct:>5.1f}% {bar}")
+
+    # Comments
+    cd = fingerprint.get("comment_density", {})
+    if isinstance(cd, dict):
+        density = cd.get("overall_density", 0)
+        print(f"  💬 Comment density: {density:.1%}")
+
+    # Complexity
+    comp = fingerprint.get("complexity_distribution", {})
+    if isinstance(comp, dict):
+        print(f"  ⚡ Avg complexity: {comp.get('average', 0)}")
+
+    print(f"  🔑 Hash: {fingerprint.get('hash_patterns', 'N/A')}")
+    print(f"  📁 Total files: {fingerprint.get('total_files', 0)}")
+
+    # Save
+    if args.save:
+        dna.save_fingerprint(args.save)
+        print(f"  💾 Saved to: {args.save}")
+
+    # Compare
+    if args.compare:
+        existing = dna.load_fingerprint(args.compare)
+        result = dna.compare_fingerprints(existing, fingerprint)
+        print(f"\n  📊 Comparison with {args.compare}:")
+        print(f"     Similarity: {result.get('overall_similarity', 0)}%")
+        print(f"     Verdict: {result.get('verdict', 'N/A')}")
+        for cat, score in result.get('category_scores', {}).items():
+            print(f"     {cat:<15s} {score:>5.1f}%")
+
+    # Clone detection
+    if args.clones:
+        clones = dna.detect_clones()
+        if isinstance(clones, dict):
+            exact = clones.get("total_exact_clones", 0)
+            near = clones.get("total_near_clone_blocks", 0)
+            print(f"\n  📋 Clone Detection:")
+            print(f"     Exact clones: {exact}")
+            print(f"     Near-clone blocks: {near}")
+            for clone in clones.get("exact_clones", [])[:5]:
+                print(f"     📎 {clone['count']} files: {', '.join(clone['files'][:3])}")
+
+    elapsed = time.time() - start
+    print(f"\n  ⏱️  Completed in {elapsed:.2f}s")
 
 
 # ── Helpers ────────────────────────────────────────────────────────────────
