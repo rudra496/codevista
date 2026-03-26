@@ -1,4 +1,7 @@
-"""CodeVista — Intelligent visual codebase explorer."""
+"""CodeVista — Google Analytics for your code.
 
-__version__ = "0.1.0"
+Beautiful, interactive codebase analysis with zero runtime dependencies.
+"""
+
+__version__ = "1.0.0"
 __author__ = "CodeVista Team"

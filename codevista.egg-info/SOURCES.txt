@@ -11,6 +11,7 @@ codevista/languages.py
 codevista/metrics.py
 codevista/report.py
 codevista/security.py
+codevista/tech_detector.py
 codevista/utils.py
 codevista.egg-info/PKG-INFO
 codevista.egg-info/SOURCES.txt
@@ -18,3 +19,8 @@ codevista.egg-info/dependency_links.txt
 codevista.egg-info/entry_points.txt
 codevista.egg-info/top_level.txt
 codevista/templates/__init__.py
+tests/test_analyzer.py
+tests/test_metrics.py
+tests/test_report.py
+tests/test_security.py
+tests/test_utils.py
