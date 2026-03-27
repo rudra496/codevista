@@ -1,3 +1,16 @@
+<!-- CodeVista — Code Analysis & Security Scanner | Static Analysis Tool -->
+<!-- Meta: CodeVista is a free, zero-dependency code analysis and security scanner that generates stunning single-page HTML reports. Supports 80+ languages, 38 lint rules, DNA fingerprinting, architectural decay detection, code smells, and more. -->
+<!-- Keywords: code analysis, static analysis, security scanner, code quality, code metrics, code smells, architecture detection, health score, technical debt, SARIF, CI/CD, lint rules, code fingerprinting -->
+
+<p align="center">
+  <!-- Badges -->
+  <a href="https://pypi.org/project/codevista/"><img src="https://img.shields.io/badge/Python-3.9+-3776AB?style=flat&logo=python&logoColor=white" alt="Python 3.9+"></a>
+  <a href="https://github.com/rudra496/codevista/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="MIT License"></a>
+  <a href="https://github.com/rudra496/codevista/actions"><img src="https://img.shields.io/badge/Tests-117%20passing-brightgreen" alt="Tests"></a>
+  <a href="#"><img src="https://img.shields.io/badge/Coverage-coming%20soon-yellow" alt="Coverage"></a>
+  <a href="#"><img src="https://img.shields.io/badge/Languages-80%2B-blue" alt="Languages"></a>
+</p>
+
 <p align="center">
   <pre>
  ██████╗ ██████╗ ███╗   ██╗ ██████╗ ███████╗██╗ ██████╗ ██╗  ██╗████████╗
@@ -9,7 +22,8 @@
   </pre>
 </p>
 
-<h3 align="center"><strong>Google Analytics for your code</strong></h3>
+<h3 align="center"><strong>CodeVista — Code Analysis & Security Scanner</strong></h3>
+<h4 align="center">Google Analytics for your code — the ultimate static analysis tool</h4>
 <p align="center">
   Beautiful interactive codebase visualizations — single HTML, zero dependencies.
 </p>
@@ -641,3 +655,36 @@ codevista/
 ## 📄 License
 
 MIT © 2026 — see [LICENSE](LICENSE)
+
+## 💡 Why CodeVista?
+
+- **Zero dependencies** — Pure Python, no Node.js, no databases, no external tools
+- **80+ languages** — Works with virtually any codebase out of the box
+- **Stunning HTML reports** — Beautiful, interactive reports you'll actually want to read
+- **Security-first** — 30+ secret detection patterns including Stripe, AWS, GitHub tokens
+- **Unique features** — CodeDNA fingerprinting and architectural decay detection (no other tool has this)
+- **CI/CD ready** — SARIF, Checkstyle, and JUnit XML output formats
+
+## 👥 Use Cases
+
+| Use Case | How |
+|----------|-----|
+| **Individual Developers** | Get a health score for your project, find security issues |
+| **Engineering Teams** | Track code quality trends, compare team member metrics |
+| **CI/CD Pipelines** | Generate SARIF reports for GitHub Code Scanning |
+| **Open Source Maintainers** | Analyze PR quality, detect code smells automatically |
+| **Code Reviews** | Get automated feedback on architecture, complexity, and duplication |
+| **Education** | Teach code quality concepts with visual, interactive reports |
+
+## 🌐 Connect
+
+- [![GitHub](https://img.shields.io/badge/GitHub-rudra496-181717?logo=github)](https://github.com/rudra496)
+- [![Twitter](https://img.shields.io/badge/X-@rudra496-1DA1F2?logo=x)](https://x.com/rudra496)
+- [![Discord](https://img.shields.io/badge/Discord-Coming_Soon-5865F2?logo=discord)](#)
+
+---
+
+<p align="center">
+  <strong>Built with ❤️ by <a href="https://github.com/rudra496">rudra496</a></strong><br>
+  <sub>MIT License · Free & Open Source Forever</sub>
+</p>

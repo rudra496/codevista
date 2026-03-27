@@ -59,8 +59,27 @@ Zero external dependencies — pure Python stdlib.
 | `codevista serve ./project/ --port 8080` | Serve report on HTTP server |
 | `codevista compare ./v1/ ./v2/` | Compare two codebases |
 | `codevista watch ./project/` | Re-analyze on file changes |
+| `codevista smells ./project/` | Detect code smells and anti-patterns |
+| `codevista architecture ./project/` | Detect architecture patterns |
+| `codevista code-age ./project/` | Analyze file age, churn, and risk |
+| `codevista export ./project/ -f sarif` | Export as SARIF for CI |
+| `codevista export ./project/ --all` | Export to all formats |
+| `codevista health ./project/` | Health score only |
+| `codevista security ./project/` | Security scan only |
+| `codevista deps ./project/` | Dependency analysis |
+| `codevista git-stats ./project/` | Git repository statistics |
+| `codevista languages ./project/` | Language distribution breakdown |
+| `codevista complexity ./project/` | Complexity analysis and top functions |
+| `codevista snapshot ./project/` | Save analysis snapshot for trend tracking |
+| `codevista trends ./project/` | Show project health trends over time |
+| `codevista diff-snapshots ./project/ 1 2` | Compare two snapshots |
+| `codevista team ./project/` | Team productivity & collaboration analysis |
+| `codevista ci-output ./project/ -f sarif` | CI/CD output (SARIF, Checkstyle, etc.) |
+| `codevista decay ./project/` | Architectural decay analysis |
+| `codevista dna ./project/` | Generate CodeDNA fingerprint |
+| `codevista lint ./project/` | Language-specific lint rules |
 
-## 📊 What It Analyyzes
+## 📊 What It Analyzes
 
 ### 🏗️ Architecture Map
 - File dependency graph — who imports whom
@@ -97,6 +116,454 @@ Zero external dependencies — pure Python stdlib.
 - Most active files
 - Commit statistics
 
+### 👃 Code Smell Detection
+CodeVista detects **19 categories of code smells** that go beyond typical linters:
+
+| Smell | Description |
+|-------|-------------|
+| **God Classes** | Classes with too many methods/fields/responsibilities |
+| **Long Parameter Lists** | Functions with too many params, especially with `=None` |
+| **Feature Envy** | Methods using another class's data more than their own |
+| **Divergent Change** | Classes modified for multiple unrelated reasons |
+| **Shotgun Surgery** | Single logical change requiring edits across many files |
+| **Parallel Inheritance** | Adding a subclass of A always requires subclassing B |
+| **Speculative Generality** | Unused abstractions, abstract methods never overridden |
+| **Temporary Fields** | Instance variables set only in certain methods |
+| **Message Chains** | Long dot chains: `a.b.c.d.e.f` |
+| **Middle Man** | Classes that only delegate to another class |
+| **Comment Smells** | Comments describing WHAT code does, not WHY |
+| **Dead Code** | Variables assigned but never read, functions never called |
+| **Magic Numbers** | Unnamed numeric literals scattered in code |
+| **Copy-Paste Code** | Near-duplicate blocks within and across files |
+| **Missing Error Handling** | I/O operations without try/catch or error checks |
+| **Inconsistent Naming** | Mixing camelCase and snake_case conventions |
+| **Boolean Parameters** | Flags indicating method should be split |
+| **isinstance Chains** | Type checking chains suggesting missing polymorphism |
+
+Each smell comes with severity, location, and **actionable remediation advice**.
+
+```bash
+codevista smells ./my-project/
+```
+
+### 🏗️ Architecture Pattern Detection
+Automatically identifies architectural patterns from project structure and code:
+
+- **MVC / MVVM / MVP** — UI patterns
+- **Layered Architecture** — presentation, business, data layers
+- **Clean Architecture** — entities, use cases, controllers, adapters
+- **Hexagonal** — ports & adapters pattern
+- **Repository Pattern** — data access mediation
+- **Service Layer** — application boundary with coordinating operations
+- **CQRS** — command/query separation
+- **Event-Driven** — event publishers, subscribers, handlers
+- **Microservices** — independent service architecture
+- **Singleton / Factory / Strategy / Observer / Decorator** — design patterns
+- **Dependency Injection** — DI framework and manual injection
+
+Includes architecture quality scoring (organization, coupling, modularity, balance) and text-based architecture diagrams.
+
+```bash
+codevista architecture ./my-project/
+```
+
+### 📅 Code Age & Risk Analysis
+Track file age, change frequency, and identify files most likely to have bugs:
+
+| Category | Description |
+|----------|-------------|
+| 🔥 **Hot** | Changed in the last 7 days |
+| 🌤️ **Warm** | Changed in the last 30 days |
+| ❄️ **Cold** | Changed 30-365 days ago |
+| 🧊 **Cold Stable** | Old but few changes (stable) |
+| 💀 **Dead** | Unchanged for >1 year |
+
+**Risk Analysis** correlates age × complexity × churn to identify the files most likely to contain bugs:
+- Files with high age, high complexity, and high change frequency get the highest risk scores
+- Statistical correlation analysis between age, complexity, and churn
+- Actionable recommendations for high-risk files
+
+```bash
+codevista code-age ./my-project/
+```
+
+## 📈 Trend Analysis
+
+Track code quality over time with snapshots and trend visualization.
+
+### How It Works
+
+1. **Save snapshots** after each analysis run
+2. **Compare snapshots** to see how your codebase evolves
+3. **Get alerted** when metrics cross critical thresholds
+4. **Track technical debt** ratio over time
+
+```bash
+# Save a snapshot of the current state
+codevista snapshot ./my-project/
+
+# Save with a label
+codevista snapshot ./my-project/ --label "before-refactor"
+
+# View trends
+codevista trends ./my-project/
+
+# Compare two specific snapshots
+codevista diff-snapshots ./my-project/ 1 2
+```
+
+### ASCII Timeline Example
+
+```
+  📈 Health Score Timeline
+  100 ┤████████████████████
+      │████████████████████
+      │████████████████████
+      │████████████████████
+      │████████████████████
+      │████████████████████
+      │████████████████████
+      │████████████████████
+      │████████████████████
+      │████████████████████
+      │████████████████████
+      │████████████████████
+    0 ┤─────────────────────
+  Current: 78/100 ↑
+```
+
+### Features
+
+- **Trend arrows**: ↑ improving, ↓ degrading, → stable
+- **Threshold alerts**: Get warned when health drops or security issues spike
+- **Technical debt tracking**: Monitor debt ratio over time
+- **Review cadence**: Suggests optimal review frequency based on change rate
+- **Code age distribution**: Track how your codebase ages
+
+## 👥 Team Metrics
+
+Analyze developer productivity and collaboration patterns.
+
+```bash
+codevista team ./my-project/
+```
+
+### What It Analyzes
+
+| Metric | Description |
+|--------|-------------|
+| **Lines per Author** | Added/removed/net per developer |
+| **Commit Frequency** | Commits per day, burst vs steady patterns |
+| **Files Touched** | Unique files per author |
+| **Bus Factor** | People needed to understand 50% of code |
+| **Code Ownership** | Pie chart data showing contribution share |
+| **Review Coverage** | Estimate from commit messages |
+| **Pair Programming** | Co-authored commit detection |
+| **Time Zone Distribution** | When the team commits |
+| **Onboarding Complexity** | How hard for a new contributor to ramp up |
+
+### 🏚️ Architectural Decay Detector
+Track how your codebase degrades over time using git history. Detects growing complexity, increasing coupling, code duplication, and predicts future state.
+
+```bash
+codevista decay ./my-project/
+```
+
+**What it analyzes:**
+
+| Metric | Description |
+|--------|-------------|
+| **Complexity Growth** | How cyclomatic complexity changes across commits |
+| **Coupling Growth** | How module interdependencies grow over time |
+| **Duplication Growth** | Code duplication ratio changes |
+| **Debt Velocity** | Technical debt accumulation rate per week |
+| **Decay Hotspots** | Files degrading fastest (ranked by decay score) |
+| **Predictions** | Linear regression forecasts for 12 weeks ahead |
+| **Inflection Points** | Key commits where quality shifted significantly |
+| **Interventions** | Prioritized refactoring recommendations |
+
+**ASCII Report Example:**
+
+```
+  ╔═══════════════════════════════════════════════════════════╗
+  ║          🏚️  ARCHITECTURAL DECAY ANALYSIS                 ║
+  ╠═══════════════════════════════════════════════════════════╣
+  ║  Repository: my-project                                    ║
+  ║  Is Git:     Yes                                          ║
+  ╚═══════════════════════════════════════════════════════════╝
+
+  📈 COMPLEXITY GROWTH
+  ────────────────────────────────────────────────────────
+    2026-01-15  avg CC:   8.2  [████░░░░░░░░░░░░░░░░░░]
+    2026-02-01  avg CC:   9.5  [█████░░░░░░░░░░░░░░░░░]
+    2026-02-15  avg CC:  11.3  [██████░░░░░░░░░░░░░░░░]
+    2026-03-01  avg CC:  13.8  [████████░░░░░░░░░░░░░░]
+    Trend: 📈 GROWING
+
+  🔥 DECAY HOTSPOTS (top 10)
+  ────────────────────────────────────────────────────────
+    🔴  1.  45.2 [████████████████████░░] src/core/engine.py
+    🟠  2.  28.7 [█████████████░░░░░░░░░] src/api/handler.js
+    🟡  3.  12.4 [██████░░░░░░░░░░░░░░░░] src/utils/parser.py
+
+  🔮 PREDICTIONS (12 weeks forward)
+  ────────────────────────────────────────────────────────
+    Avg complexity:   18.5
+    Debt lines:       2450
+    Confidence:       moderate
+
+  💡 RECOMMENDED INTERVENTIONS
+  ────────────────────────────────────────────────────────
+    🔴 [CRITICAL] src/core/engine.py
+       Action: refactor
+       break into smaller functions/modules; stabilize — changes are volatile
+```
+
+### 🧬 CodeDNA Fingerprinter
+Create unique DNA fingerprints for codebases — identify projects, detect forks, spot cloned code.
+
+```bash
+# Generate fingerprint with ASCII barcode
+codevista dna ./my-project/
+
+# Save fingerprint for later comparison
+codevista dna ./my-project/ --save fingerprint.json
+
+# Compare two projects
+codevista dna ./project-a/ --compare fingerprint.json
+
+# Detect cloned files
+codevista dna ./my-project/ --clones
+```
+
+**What it captures:**
+
+| Component | Description |
+|-----------|-------------|
+| **Hash Patterns** | SHA-based profile of code structure patterns |
+| **Language Distribution** | Language mix signature |
+| **Complexity Distribution** | Complexity bucket fingerprint |
+| **Dependency Topology** | Import graph topology hash |
+| **Naming Conventions** | camelCase/snake_case/PascalCase ratios |
+| **Comment Density** | Documentation coverage fingerprint |
+| **Function Size** | Function size distribution |
+| **File Size** | File size distribution |
+| **Clone Detection** | Exact and near-clone detection via block hashing |
+
+**Barcode Example:**
+
+```
+  ┌─────────────────────────────────────────────────────┐
+  │              🧬 CodeDNA Barcode                     │
+  ├─────────────────────────────────────────────────────┤
+  │  ▓▓▒▒░░████▓▓▒░████░▒▒▓▓████░░▒▒▓▓░░████▒▒░░████│
+  │  ██▓▓░░▒▒████░░▓▓██▒▒░░▓▓▒▒████░░▓▓██▒▒░░▓▓▒▒░░░│
+  │  ░░▒▒██▓▓░░▒▒████░░▓▓██▒▒████░░▓▓░░▒▒████░░▓▓██▓▓│
+  │  ░░████░░▓▓▒▒██▓▓░░▒▒████░░▓▓░░████░░▒▒██▓▓░░▒▒░░│
+  ├─────────────────────────────────────────────────────┤
+  │  Project: my-project                    files:   42│
+  │  Languages: Python 45.2%, JS 30.1%, HTML 15.3%    │
+  │  Naming: snake_case                                   │
+  │  Hash: a3f7c2b1e9d04586                              │
+  └─────────────────────────────────────────────────────┘
+
+  Compact: [█████░░████░░░░████████░░██░░░░████░░████░░]
+  a3f7c2b1e9d045867f2a9c3d1e8b4f6a...
+```
+
+## 📏 Lint Rules
+
+CodeVista includes **38 language-specific lint rules** across 5 languages, enforcing popular style guides:
+
+```bash
+# Lint entire project
+codevista lint ./my-project/
+
+# Lint specific file
+codevista lint ./src/app.py
+
+# Filter by language
+codevista lint ./project/ -l python -l javascript
+
+# Filter by severity
+codevista lint ./project/ -s error -s warning
+
+# Include/exclude specific rules
+codevista lint ./project/ --include-rule PY001 --exclude-rule PY010
+
+# JSON output for CI
+codevista lint ./project/ --json
+
+# List all available rules
+codevista lint --rules
+```
+
+### Supported Languages & Rules
+
+| Language | Style Guide | Rules | Severity |
+|----------|------------|-------|----------|
+| **Python** | PEP 8 / Black | PY001–PY011 (11 rules) | error/warning/info |
+| **JavaScript** | Airbnb | JS001–JS009 (9 rules) | error/warning/info |
+| **TypeScript** | Airbnb (shared) | JS001–JS009 (9 rules) | error/warning/info |
+| **Go** | gofmt | GO001–GO005 (5 rules) | error/warning |
+| **Rust** | clippy-lite | RS001–RS005 (5 rules) | error/warning/info |
+| **Java** | Google Style | JA001–JA006 (6 rules) | error/warning/info |
+
+### Python (PEP 8 / Black)
+
+| Rule | Severity | Description |
+|------|----------|-------------|
+| PY001 | warning | Max line length (88 for Black) |
+| PY002 | error | No wildcard imports (`from x import *`) |
+| PY003 | info | Import order: stdlib → third-party → local, alphabetized |
+| PY004 | info | Two blank lines before top-level definitions |
+| PY005 | info | One blank line before methods |
+| PY006 | info | Spaces around operators |
+| PY007 | info | Prefer f-strings over `.format()` / %-formatting |
+| PY008 | info | Type hints on public functions |
+| PY009 | warning | Naming conventions (snake_case, PascalCase, UPPER_CASE) |
+| PY010 | info | No trailing whitespace |
+| PY011 | warning | No multiple statements on one line |
+
+### JavaScript/TypeScript (Airbnb)
+
+| Rule | Severity | Description |
+|------|----------|-------------|
+| JS001 | error | No `var` — use `const` or `let` |
+| JS002 | info | Prefer template literals over string concatenation |
+| JS003 | info | Use arrow functions for callbacks |
+| JS004 | warning | Use `===` instead of `==` |
+| JS005 | warning | 2-space indentation (no tabs) |
+| JS006 | warning | No unused variables |
+| JS007 | info | Prefer destructuring for repeated property access |
+| JS008 | info | Use object shorthand syntax |
+| JS009 | info | Trailing comma conventions |
+
+### Go (gofmt)
+
+| Rule | Severity | Description |
+|------|----------|-------------|
+| GO001 | error | Tab indentation required |
+| GO002 | error | No unused imports |
+| GO003 | warning | Exported names must have doc comment |
+| GO004 | error | Error handling — do not discard errors |
+| GO005 | warning | No variable shadowing in inner scopes |
+
+### Rust (clippy-lite)
+
+| Rule | Severity | Description |
+|------|----------|-------------|
+| RS001 | error | No `.unwrap()` in production code |
+| RS002 | warning | Use Option/Result properly (no `is_some().unwrap()`) |
+| RS003 | error | No mutable statics |
+| RS004 | info | Lint suppressions should be avoided |
+| RS005 | error | Naming conventions (snake_case functions/vars) |
+
+### Java (Google Style)
+
+| Rule | Severity | Description |
+|------|----------|-------------|
+| JA001 | error | 4-space indentation (no tabs) |
+| JA002 | warning | Javadoc on public methods |
+| JA003 | error | No wildcard imports |
+| JA004 | error | Braces required for control statements |
+| JA005 | warning | Catch specific exceptions |
+| JA006 | info | Use logger instead of `System.out.print` |
+
+### Exit Codes
+
+| Code | Meaning |
+|------|---------|
+| `0` | Clean — no violations |
+| `2` | Errors found |
+
+## 📤 Export Formats
+
+Export analysis results in multiple formats for different use cases:
+
+| Format | Use Case | Command |
+|--------|----------|---------|
+| **HTML** | Interactive report in browser | `codevista export . -f html` |
+| **JSON** | Programmatic access, APIs | `codevista export . -f json` |
+| **Markdown** | Documentation, READMEs, wikis | `codevista export . -f markdown` |
+| **SARIF** | GitHub Code Scanning, CI/CD | `codevista export . -f sarif` |
+| **CSV** | Spreadsheets, data analysis | `codevista export . -f csv` |
+| **YAML** | CODE_METRICS format | `codevista export . -f yaml` |
+| **PDF** | Printable reports | `codevista export . -f pdf` |
+| **All formats** | Everything at once | `codevista export . --all` |
+
+```bash
+# CI integration with GitHub Code Scanning
+codevista export ./project/ -f sarif -o results.sarif.json
+
+# Export everything
+codevista export ./project/ -o ./reports/codevista --all
+```
+
+## 🔌 CI/CD Integration
+
+CodeVista provides dedicated CI output formats with threshold-based pass/fail.
+
+### Supported Formats
+
+| Format | Platform | Command |
+|--------|----------|---------|
+| **SARIF** | GitHub Code Scanning | `codevista ci-output . -f sarif` |
+| **GitLab Code Quality** | GitLab | `codevista ci-output . -f gitlab` |
+| **Checkstyle XML** | Jenkins, GitHub Actions | `codevista ci-output . -f checkstyle` |
+| **JUnit XML** | Any CI with JUnit support | `codevista ci-output . -f junit` |
+| **Markdown** | PR comments | `codevista ci-output . -f markdown` |
+| **Terminal** | Quick terminal output | `codevista ci-output . -f terminal` |
+
+### Exit Codes
+
+| Code | Meaning | Description |
+|------|---------|-------------|
+| `0` | Clean | All thresholds passed |
+| `1` | Warnings | Medium-severity threshold violations |
+| `2` | Errors | High-severity violations (health, complexity) |
+| `3` | Critical | Critical security issues or severe degradation |
+
+### Threshold Configuration
+
+Create `.codevista.json` in your project root:
+
+```json
+{
+  "max_security_critical": 0,
+  "max_security_high": 0,
+  "max_security_medium": 5,
+  "max_security_total": 10,
+  "max_avg_complexity": 10,
+  "max_technical_debt_ratio": 0.25,
+  "min_health_score": 60,
+  "max_duplicates": 10,
+  "max_circular_deps": 0,
+  "max_todo_count": 50
+}
+```
+
+```bash
+# Run with exit codes (CI will fail if thresholds violated)
+codevista ci-output ./project/ -f sarif -o results.sarif.json
+echo "Exit code: $?"  # 0=clean, 1=warnings, 2=errors, 3=critical
+```
+
+## 🐳 Docker
+
+```bash
+# Build
+docker build -t codevista .
+
+# Analyze a project
+docker run --rm -v $(pwd):/workspace codevista analyze /workspace
+
+# Use docker-compose
+docker-compose up
+```
+
+The Docker image uses multi-stage builds for minimal size, runs as non-root, and includes `wkhtmltopdf` for PDF export.
+
 ## 🎨 Report Features
 
 - **Single HTML file** — share anywhere, works offline forever
@@ -118,24 +585,51 @@ Zero external dependencies — pure Python stdlib.
 | Security scan | ✅ | ✅ | ✅ | ❌ |
 | Git analysis | ✅ | ✅ | ✅ | ❌ |
 | Visual charts | ✅ | ✅ | ✅ | ❌ |
+| Code smell detection | ✅ **19 types** | Limited | Limited | ❌ |
+| Architecture patterns | ✅ **12+ patterns** | ❌ | ❌ | ❌ |
+| Code age analysis | ✅ | ❌ | ❌ | ❌ |
+| SARIF export | ✅ | ✅ | ✅ | ❌ |
 | Cost | **Free** | Free/Paid | Paid | Free |
 | Server needed | **No** | Yes | Yes | No |
+
+## 💎 What Makes CodeVista Unique
+
+1. **Zero dependencies** — pure Python stdlib, no pip install headaches
+2. **Single HTML output** — share one file, works offline forever, no server
+3. **Deep code smell detection** — 19 smell categories with AST-level analysis, not just regex
+4. **Architecture pattern detection** — identifies 12+ patterns from structure + code
+5. **Code age × risk correlation** — statistical analysis of age, complexity, and churn
+6. **Multi-format export** — HTML, JSON, Markdown, SARIF, CSV, YAML, PDF
+7. **Docker support** — multi-stage build, non-root user, PDF-ready
+8. **Beautiful design** — dark mode, glassmorphism, inline SVG charts, animations
+9. **Works on any codebase** — 50+ languages, no configuration needed
+10. **CI/CD ready** — SARIF export for GitHub Code Scanning integration
 
 ## 🏗️ Architecture
 
 ```
 codevista/
-├── cli.py           # CLI interface (argparse)
-├── analyzer.py      # Core analysis engine
-├── report.py        # HTML report generator
-├── metrics.py       # Health scores & recommendations
-├── security.py      # Secret/vulnerability scanning
-├── dependencies.py  # Dependency parsing & analysis
-├── git_analysis.py  # Git stats extraction
-├── languages.py     # Language definitions & colors
-├── config.py        # Configuration & ignore patterns
-├── utils.py         # Utilities & color schemes
-└── templates/       # HTML templates
+├── cli.py            # CLI interface (argparse)
+├── analyzer.py       # Core analysis engine
+├── report.py         # HTML report generator
+├── metrics.py        # Health scores & recommendations
+├── smells.py         # Code smell detection (19 categories)
+├── architecture.py   # Architecture pattern detector
+├── code_age.py       # Code age & risk analysis
+├── export.py         # Multi-format export (HTML/JSON/MD/SARIF/CSV/YAML/PDF)
+├── security.py       # Secret/vulnerability scanning
+├── dependencies.py   # Dependency parsing & analysis
+├── git_analysis.py   # Git stats extraction
+├── trends.py         # Trend analysis & snapshot tracking
+├── team.py           # Team metrics & collaboration analysis
+├── integrations.py   # CI/CD output (SARIF, Checkstyle, JUnit, GitLab)
+├── decay.py          # Architectural decay detector
+├── codedna.py        # CodeDNA fingerprinter
+├── lint_rules.py     # Language-specific lint rules (PEP 8, Airbnb, gofmt, clippy, Google)
+├── languages.py      # Language definitions & colors
+├── config.py         # Configuration & ignore patterns
+├── utils.py          # Utilities & color schemes
+└── templates/        # HTML templates
 ```
 
 ## 🛠️ Tech Stack
@@ -144,6 +638,7 @@ codevista/
 - **Inline SVG** for all charts
 - **CSS custom properties** for theming
 - **Vanilla JavaScript** for interactivity
+- **AST parsing** for deep code analysis (Python)
 
 ## 🤝 Contributing
 
