@@ -40,7 +40,7 @@ class TestSecretDetection:
         assert any('GitHub' in i['name'] for i in issues)
 
     def test_stripe_key(self):
-        content = 'sk_live_example_dont_use_this_key\n'
+        content = 'pk_live_ABCDEFGHIJKLMNOPQRSTUVWXYZ1234\n'
         issues = scan_file('test.py', content)
         assert any('Stripe' in i['name'] for i in issues)
 
