@@ -521,7 +521,41 @@ def detect_quality_issues(content: str, language: Optional[str] = None,
                         break
                     if not next_line:
                         continue
-                    break
+                        break
+
+    elif language == 'Go':
+        for m in re.finditer(r'\berr\s*!=\s*nil\b', content):
+            pass
+        for m in re.finditer(r'_\s*=\s*\w+\.\w+\s*\(', content):
+            line_num = content[:m.start()].count('\n') + 1
+            issues.append({'type': 'ignored_error', 'severity': 'medium',
+                          'line': line_num, 'message': 'Error return value ignored with _', 'file': filepath})
+        for m in re.finditer(r'\bpanic\s*\(', content):
+            line_num = content[:m.start()].count('\n') + 1
+            issues.append({'type': 'panic', 'severity': 'medium',
+                          'line': line_num, 'message': 'panic() — consider returning error instead', 'file': filepath})
+        for m in re.finditer(r'\bgoto\s+\w+', content):
+            line_num = content[:m.start()].count('\n') + 1
+            issues.append({'type': 'goto', 'severity': 'medium',
+                          'line': line_num, 'message': 'goto statement — consider refactoring', 'file': filepath})
+
+    elif language == 'Rust':
+        for m in re.finditer(r'\.unwrap\s*\(\s*\)', content):
+            line_num = content[:m.start()].count('\n') + 1
+            issues.append({'type': 'unwrap', 'severity': 'medium',
+                          'line': line_num, 'message': 'unwrap() — use ? operator or proper error handling', 'file': filepath})
+        for m in re.finditer(r'\btodo!\s*\(', content):
+            line_num = content[:m.start()].count('\n') + 1
+            issues.append({'type': 'todo_macro', 'severity': 'high',
+                          'line': line_num, 'message': 'todo!() macro — will panic at runtime', 'file': filepath})
+        for m in re.finditer(r'\bunimplemented!\s*\(', content):
+            line_num = content[:m.start()].count('\n') + 1
+            issues.append({'type': 'unimplemented_macro', 'severity': 'high',
+                          'line': line_num, 'message': 'unimplemented!() macro — will panic at runtime', 'file': filepath})
+        for m in re.finditer(r'\bdbg!\s*\(', content):
+            line_num = content[:m.start()].count('\n') + 1
+            issues.append({'type': 'dbg_macro', 'severity': 'low',
+                          'line': line_num, 'message': 'dbg! macro — debug output left in code', 'file': filepath})
 
     return issues
 

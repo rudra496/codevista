@@ -199,6 +199,46 @@ DANGEROUS_PATTERNS: List[Tuple[str, str, str, str]] = [
     (r'logging\.(?:info|debug|warning|error)\s*\([^)]*(?:request|input|param|args|form)', 'Unsanitized user input in log — log injection risk', 'medium', 'code'),
     (r'logger\.(?:info|debug|warning|error)\s*\([^)]*(?:request|input|param|args|form)', 'Unsanitized user input in logger — log injection risk', 'medium', 'code'),
 
+    # Go-specific
+    (r'\bexec\.Command\s*\([^)]*(?:\+|fmt\.Sprintf|fmt\.Sprint)', 'Go exec.Command with string concatenation — command injection', 'high', 'code'),
+    (r'\bunsafe\s*\.\s*Pointer\b', 'Go unsafe.Pointer — memory safety risk', 'medium', 'code'),
+    (r'\breflect\s*\.\s*ValueOf\b.*\bSet\b', 'Go reflect usage — potential type confusion', 'medium', 'code'),
+    (r'crypto/md5\b', 'Go crypto/md5 — weak hash algorithm', 'medium', 'code'),
+    (r'crypto/sha1\b', 'Go crypto/sha1 — weak hash algorithm', 'medium', 'code'),
+    (r'\bcrypt\.GenerateFromPassword\s*\(\s*bcrypt\.DefaultCost\s*\)', 'Go bcrypt with default cost — consider higher cost', 'low', 'code'),
+    (r'\bhttp\.DefaultClient\b', 'Go http.DefaultClient — no timeout configured', 'medium', 'code'),
+    (r'\bhttp\.DefaultTransport\b', 'Go http.DefaultTransport — no TLS verification override', 'medium', 'code'),
+    (r'\btls\.Config\s*\{[^}]*InsecureSkipVerify\s*:\s*true', 'Go TLS InsecureSkipVerify — disables certificate verification', 'high', 'code'),
+    (r'\bdefer\s+resp\.Body\.Close\b', 'Go defer resp.Body.Close — missing error check on Body read', 'low', 'code'),
+    (r'\bfilepath\.Join\s*\([^)]*\+?\s*(?:r\.|req\.)', 'Go filepath.Join with user input — path traversal risk', 'high', 'code'),
+    (r'\bos\.Open\s*\([^)]*(?:r\.|req\.|input)', 'Go os.Open with user input — path traversal risk', 'high', 'code'),
+    (r'\bdatabase/sql\b.*\bExec\s*\([^)]*(?:fmt\.Sprintf|\+)', 'Go SQL with string formatting — injection risk', 'high', 'code'),
+    (r'\bssh\.InsecureIgnoreHostKey\b', 'Go SSH InsecureIgnoreHostKey — MITM risk', 'high', 'code'),
+    (r'\brand\.\w+\s*\(', 'Go math/rand — not cryptographically secure', 'low', 'code'),
+    (r'\btime\.After\s*\(\s*\d+\s*\)', 'Go time.After with no cancel — potential goroutine leak', 'medium', 'code'),
+    (r'\bgolang.org/x/crypto/bcrypt\b', 'Go bcrypt found — good practice (informational)', 'low', 'info'),
+
+    # Rust-specific
+    (r'\bunsafe\s*\{', 'Rust unsafe block — bypasses safety checks', 'high', 'code'),
+    (r'\bunsafe\s+fn\b', 'Rust unsafe function — bypasses safety checks', 'high', 'code'),
+    (r'\bstd::mem::transmute\b', 'Rust transmute — unsafe type cast', 'high', 'code'),
+    (r'\bstd::ptr::\w+\b', 'Rust raw pointer operation', 'high', 'code'),
+    (r'\bunwrap\s*\(\s*\)', 'Rust unwrap() — can panic at runtime', 'medium', 'code'),
+    (r'\bexpect\s*\(\s*""', 'Rust expect with empty message — unhelpful panic message', 'medium', 'code'),
+    (r'\bas\s+mut\b', 'Rust unsafe mutable reference cast', 'medium', 'code'),
+    (r'\bstd::fs::\w+\s*\([^)]*(?:format!|\+)', 'Rust fs operation with string formatting — path traversal risk', 'high', 'code'),
+    (r'\bCommand::new\s*\([^)]*(?:format!|\+)', 'Rust Command::new with string concatenation — command injection', 'high', 'code'),
+    (r'\bCommand::new\s*\(\s*"(?:sh|bash|cmd|powershell)"\).*\.arg\s*\(\s*"-c"\)', 'Rust shell command via -c flag — command injection', 'high', 'code'),
+    (r'\bthread::spawn\b', 'Rust thread::spawn — potential concurrency issues', 'low', 'code'),
+    (r'\bstd::env::var\b', 'Rust env var access — may expose secrets in process listing', 'low', 'code'),
+    (r'\bprintln!\s*\(\s*(?:password|secret|key|token)', 'Rust println with sensitive data', 'medium', 'code'),
+    (r'\bdbg!\s*\(', 'Rust dbg! macro — debug output left in code', 'medium', 'code'),
+    (r'\btodo!\s*\(', 'Rust todo! macro — will panic at runtime', 'medium', 'code'),
+    (r'\bunimplemented!\s*\(', 'Rust unimplemented! macro — will panic at runtime', 'medium', 'code'),
+    (r'\bmd5::\w+\s*\(', 'Rust md5 crate — weak hash algorithm', 'medium', 'code'),
+    (r'\bsha1::\w+\s*\(', 'Rust sha1 crate — weak hash algorithm', 'medium', 'code'),
+    (r'\bprintln!\s*\(', 'Rust println! in non-test code — use proper logging', 'low', 'info'),
+
     # Other
     (r'\binput\s*\(', 'input() — potential injection (Python 2)', 'low', 'code'),
     (r'\bassert\s*\(', 'assert — disabled with -O optimization flag', 'low', 'code'),
@@ -347,6 +387,24 @@ def _get_remediation(name: str, severity: str) -> str:
         return 'Use secrets module or os.urandom() for cryptographic randomness.'
     if 'mktemp' in n:
         return 'Use tempfile.mkstemp() or tempfile.NamedTemporaryFile() instead.'
+    if 'unsafe' in n and 'rust' in n.lower():
+        return 'Minimize unsafe blocks. Use safe Rust abstractions and document safety invariants.'
+    if 'transmute' in n:
+        return 'Use safe alternatives. Transmute bypasses Rust safety guarantees.'
+    if 'unwrap' in n:
+        return 'Use the ? operator, match, or expect() with a descriptive message instead of unwrap().'
+    if 'todo!' in n or 'unimplemented!' in n:
+        return 'Replace todo!/unimplemented! with proper error handling before shipping.'
+    if 'unsafe block' in n:
+        return 'Minimize unsafe blocks. Ensure all invariants are documented and maintained.'
+    if 'unsafe.Pointer' in n:
+        return 'Minimize unsafe.Pointer usage. Use safe Go abstractions when possible.'
+    if 'InsecureSkipVerify' in n:
+        return 'Enable TLS certificate verification. InsecureSkipVerify exposes connections to MITM attacks.'
+    if 'http.DefaultClient' in n:
+        return 'Create a custom http.Client with timeouts instead of using http.DefaultClient.'
+    if 'InsecureIgnoreHostKey' in n:
+        return 'Use a known_hosts file or custom HostKeyCallback to verify SSH server identity.'
     return 'Review this finding and ensure it follows security best practices.'
 
 
