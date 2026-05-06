@@ -691,6 +691,17 @@ MIT © 2026 — see [LICENSE](LICENSE)
 | **Code Reviews** | Get automated feedback on architecture, complexity, and duplication |
 | **Education** | Teach code quality concepts with visual, interactive reports |
 
+n## 🔗 Other Projects
+
+Check out more open-source tools:
+
+| Project | Description | Stars |
+|---------|-------------|-------|
+| [🛡️ AI Code Trust Validator](https://github.com/rudra496/ai-code-trust-validator) | Detect security flaws, hallucinations & logic errors in AI-generated code | ![Stars](https://img.shields.io/github/stars/rudra496/ai-code-trust-validator?style=social) |
+| [🤖 TermMind](https://github.com/rudra496/termmind) | AI-powered terminal assistant with 7 providers | ![Stars](https://img.shields.io/github/stars/rudra496/termmind?style=social) |
+
+---
+
 ## 🌐 Connect
 
 - [![GitHub](https://img.shields.io/badge/GitHub-rudra496-181717?logo=github)](https://github.com/rudra496)
