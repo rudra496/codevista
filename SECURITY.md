@@ -15,7 +15,7 @@ security vulnerability, please report it responsibly.
 ### How to Report
 
 1. **Do not** open a public issue for the vulnerability.
-2. Send an email to [INSERT SECURITY EMAIL] with the subject line
+2. Send an email to security@rudra496.dev or report via GitHub's [private vulnerability reporting](https://github.com/rudra496/codevista/security/advisories/new) with the subject line
    `[Security] CodeVista Vulnerability Report`.
 3. Include as much information as possible:
    - Description of the vulnerability

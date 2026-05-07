@@ -691,7 +691,7 @@ MIT © 2026 — see [LICENSE](LICENSE)
 | **Code Reviews** | Get automated feedback on architecture, complexity, and duplication |
 | **Education** | Teach code quality concepts with visual, interactive reports |
 
-n## 🔗 Other Projects
+## 🔗 Other Projects
 
 Check out more open-source tools:
 
