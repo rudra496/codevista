@@ -1,14 +1,14 @@
 <!-- CodeVista — Code Analysis & Security Scanner | Static Analysis Tool -->
-<!-- Meta: CodeVista is a free, zero-dependency code analysis and security scanner that generates stunning single-page HTML reports. Supports 75+ languages, 38 lint rules, DNA fingerprinting, architectural decay detection, code smells, and more. -->
+<!-- Meta: CodeVista is a free, zero-dependency code analysis and security scanner that generates stunning single-page HTML reports. Supports 65+ languages, 36 lint rules, DNA fingerprinting, architectural decay detection, code smells, and more. -->
 <!-- Keywords: code analysis, static analysis, security scanner, code quality, code metrics, code smells, architecture detection, health score, technical debt, SARIF, CI/CD, lint rules, code fingerprinting -->
 
 <p align="center">
   <!-- Badges -->
   <a href="https://pypi.org/project/codevista/"><img src="https://img.shields.io/badge/Python-3.9+-3776AB?style=flat&logo=python&logoColor=white" alt="Python 3.9+"></a>
   <a href="https://github.com/rudra496/codevista/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="MIT License"></a>
-  <a href="https://github.com/rudra496/codevista/actions"><img src="https://img.shields.io/badge/Tests-117%20passing-brightgreen" alt="Tests"></a>
+  <a href="https://github.com/rudra496/codevista/actions"><img src="https://img.shields.io/badge/Tests-190%20passing-brightgreen" alt="Tests"></a>
   <a href="#"><img src="https://img.shields.io/badge/Coverage-coming%20soon-yellow" alt="Coverage"></a>
-  <a href="#"><img src="https://img.shields.io/badge/Languages-80%2B-blue" alt="Languages"></a>
+  <a href="#"><img src="https://img.shields.io/badge/Languages-65%2B-blue" alt="Languages"></a>
   <a href="https://github.com/rudra496/codevista/stargazers"><img src="https://img.shields.io/github/stars/rudra496/codevista?style=social" alt="Stars"></a>
   <a href="https://github.com/rudra496/codevista/network/members"><img src="https://img.shields.io/github/forks/rudra496/codevista?style=social" alt="Forks"></a>
   <a href="https://github.com/rudra496/codevista/issues"><img src="https://img.shields.io/github/issues/rudra496/codevista" alt="Issues"></a>
@@ -103,7 +103,7 @@ Zero external dependencies — pure Python stdlib.
 - File size distribution
 
 ### 🧩 Technology Detection
-- Language detection (50+ languages)
+- Language detection (65+ languages)
 - Framework detection (React, Django, Flask, Express, etc.)
 - Dependency inventory with versions
 
@@ -382,7 +382,7 @@ codevista dna ./my-project/ --clones
 
 ## 📏 Lint Rules
 
-CodeVista includes **38 language-specific lint rules** across 5 languages, enforcing popular style guides:
+CodeVista includes **36 language-specific lint rules** across 5 languages, enforcing popular style guides:
 
 ```bash
 # Lint entire project
@@ -611,7 +611,7 @@ The Docker image uses multi-stage builds for minimal size, runs as non-root, and
 6. **Multi-format export** — HTML, JSON, Markdown, SARIF, CSV, YAML, PDF
 7. **Docker support** — multi-stage build, non-root user, PDF-ready
 8. **Beautiful design** — dark mode, glassmorphism, inline SVG charts, animations
-9. **Works on any codebase** — 50+ languages, no configuration needed
+9. **Works on any codebase** — 65+ languages, no configuration needed
 10. **CI/CD ready** — SARIF export for GitHub Code Scanning integration
 
 ## 🏗️ Architecture
@@ -643,7 +643,7 @@ codevista/
 
 ## 🛠️ Tech Stack
 
-- **Python 3.7+** (stdlib only)
+- **Python 3.9+** (stdlib only)
 - **Inline SVG** for all charts
 - **CSS custom properties** for theming
 - **Vanilla JavaScript** for interactivity
@@ -674,9 +674,9 @@ MIT © 2026 — see [LICENSE](LICENSE)
 ## 💡 Why CodeVista?
 
 - **Zero dependencies** — Pure Python, no Node.js, no databases, no external tools
-- **75+ languages** — Works with virtually any codebase out of the box
+- **65+ languages** — Works with virtually any codebase out of the box
 - **Stunning HTML reports** — Beautiful, interactive reports you'll actually want to read
-- **Security-first** — 30+ secret detection patterns including Stripe, AWS, GitHub tokens
+- **Security-first** — 60+ secret detection patterns including Stripe, AWS, GitHub tokens
 - **Unique features** — CodeDNA fingerprinting and architectural decay detection (no other tool has this)
 - **CI/CD ready** — SARIF, Checkstyle, and JUnit XML output formats
 

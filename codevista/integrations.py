@@ -7,10 +7,12 @@ and threshold configuration.
 
 import json
 import os
+import re
 import sys
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
 from datetime import datetime
+from collections import Counter, defaultdict
 from typing import Any, Dict, List, Optional, Tuple
 from collections import Counter
 
@@ -743,12 +745,23 @@ def _parse_simple_yaml(content: str) -> Dict[str, Any]:
         line = line.strip()
         if not line or line.startswith('#'):
             continue
-        m = re.search(r'^[\w_]+:\s*(.+)$', line)
+        m = re.match(r'^([\w_]+):\s*(.+)$', line)
         if not m:
             continue
-        # Check if it's under thresholds section
-        key_val = m.group(1).strip() if m else ''
-        # Simple flat parsing
+        key = m.group(1).strip()
+        val = m.group(2).strip()
+        # Try to parse as number
+        try:
+            if '.' in val:
+                val = float(val)
+            else:
+                val = int(val)
+        except ValueError:
+            if val.lower() in ('true', 'yes'):
+                val = True
+            elif val.lower() in ('false', 'no'):
+                val = False
+        result[key] = val
     return result
 
 

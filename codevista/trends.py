@@ -659,7 +659,7 @@ def _compute_tech_debt_ratio(analysis: Dict, scores: Dict) -> float:
         return 0.0
 
     todo_count = len(analysis.get('todos', []))
-    dup_count = len(analysis.get('todos', []))
+    dup_count = len(analysis.get('duplicates', []))
     high_cc = sum(1 for f in analysis.get('functions', [])
                   if f.get('complexity', 0) > 15)
     long_funcs = sum(1 for f in analysis.get('functions', [])

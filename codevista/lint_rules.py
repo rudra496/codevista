@@ -631,13 +631,29 @@ def _js_object_shorthand(filepath: str, content: str) -> List[LintViolation]:
 
 
 def _js_no_trailing_comma_newline(filepath: str, content: str) -> List[LintViolation]:
-    """JS009: Allow trailing commas in multiline (ES2017+), warn on single-line old-style."""
+    """JS009: Allow trailing commas in multiline (ES2017+), warn on single-line trailing commas."""
     violations = []
+    in_multiline = False
     for i, line in enumerate(content.splitlines(), 1):
         stripped = line.rstrip()
-        if stripped.endswith(",") and stripped.startswith(")") or stripped.startswith("]"):
-            # This is fine in modern JS, just info
-            pass
+        if '{' in stripped or '[' in stripped or '(' in stripped:
+            in_multiline = True
+        if stripped.endswith(',}'):
+            violations.append(LintViolation(
+                file=filepath, line=i, rule_id="JS009",
+                language="javascript", severity="warning",
+                message="Trailing comma before closing brace — remove or add newline",
+                snippet=stripped[:80],
+            ))
+        elif in_multiline and stripped.endswith(',') and ('}' in stripped or ']' in stripped or ')' in stripped):
+            violations.append(LintViolation(
+                file=filepath, line=i, rule_id="JS009",
+                language="javascript", severity="info",
+                message="Trailing comma before closing bracket on same line",
+                snippet=stripped[:80],
+            ))
+        if '}' in stripped or ']' in stripped or ')' in stripped:
+            in_multiline = False
     return violations
 
 

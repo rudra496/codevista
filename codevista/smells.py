@@ -474,12 +474,23 @@ def _detect_speculative_generality_python(tree: ast.AST, filepath: str) -> List[
 
         unused_params = all_args - used_names
         # But default None params are common in Python APIs, don't flag those as speculative
+        defaults = list(node.args.defaults)
+        kw_defaults = list(node.args.kw_defaults)
+        total_args = node.args.args + node.args.posonlyargs
+        # Positional args with defaults: last len(defaults) of total_args
+        args_with_defaults = set()
+        for i, d in enumerate(defaults):
+            idx = len(total_args) - len(defaults) + i
+            if 0 <= idx < len(total_args) and d is not None:
+                args_with_defaults.add(total_args[idx].arg)
+        for i, d in enumerate(kw_defaults):
+            if d is not None and i < len(node.args.kwonlyargs):
+                args_with_defaults.add(node.args.kwonlyargs[i].arg)
+
         truly_unused = []
         for arg in node.args.args + node.args.posonlyargs + node.args.kwonlyargs:
-            if arg.arg in unused_params:
-                has_default = arg.default is not None
-                if not has_default:
-                    truly_unused.append(arg.arg)
+            if arg.arg in unused_params and arg.arg not in args_with_defaults:
+                truly_unused.append(arg.arg)
 
         if len(truly_unused) >= 2:
             smells.append({
@@ -1675,7 +1686,7 @@ def generate_smell_recommendations(smell_data: Dict[str, Any]) -> List[Dict]:
 
     if per_type.get('feature_envy', 0) > 0:
         recs.append({
-            'icon': '转移', 'category': 'Feature Envy', 'priority': 'medium',
+            'icon': '🔗', 'category': 'Feature Envy', 'priority': 'medium',
             'message': f'Found {per_type["feature_envy"]} feature envy cases. Move methods closer to the data they use.',
         })
 

@@ -521,7 +521,6 @@ def detect_quality_issues(content: str, language: Optional[str] = None,
                         break
                     if not next_line:
                         continue
-                        break
 
     elif language == 'Go':
         for m in re.finditer(r'\berr\s*!=\s*nil\b', content):
