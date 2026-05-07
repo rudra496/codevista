@@ -587,25 +587,27 @@ The Docker image uses multi-stage builds for minimal size, runs as non-root, and
 
 | Feature | CodeVista | SonarQube | CodeClimate | lizard |
 |---------|-----------|-----------|-------------|--------|
-| Setup | `pip install` | Docker/Server | SaaS | `pip install` |
-| Dependencies | **Zero** | Heavy | None | None |
-| Output | **Single HTML** | Web UI | Web UI | CLI |
-| Offline | ✅ | ❌ | ❌ | N/A |
-| Security scan | ✅ | ✅ | ✅ | ❌ |
+| Setup | `pip install` | Docker/Server | SaaS / CLI | `pip install` |
+| Dependencies | **Zero** | Heavy (Java + DB) | Docker (CLI) | None |
+| Output | **Single HTML** | Web UI | Web UI | CLI text |
+| Offline | ✅ | ❌ | ❌ | ✅ |
+| Security scan | ✅ 60+ patterns | ✅ extensive | ✅ plugins | ❌ |
 | Git analysis | ✅ | ✅ | ✅ | ❌ |
-| Visual charts | ✅ | ✅ | ✅ | ❌ |
-| Code smell detection | ✅ **19 types** | Limited | Limited | ❌ |
+| Visual charts | ✅ inline SVG | ✅ | ✅ | ❌ |
+| Code smell detection | ✅ 19 categories | ✅ extensive | ✅ maintainability | ❌ |
 | Architecture patterns | ✅ **12+ patterns** | ❌ | ❌ | ❌ |
-| Code age analysis | ✅ | ❌ | ❌ | ❌ |
-| SARIF export | ✅ | ✅ | ✅ | ❌ |
+| Code age analysis | ✅ | Partial | ❌ | ❌ |
+| SARIF export | ✅ | ✅ | ❌ | ❌ |
 | Cost | **Free** | Free/Paid | Paid | Free |
 | Server needed | **No** | Yes | Yes | No |
+
+> **Note:** SonarQube and CodeClimate are mature enterprise tools with deeper language coverage and IDE integrations. CodeVista differentiates by being zero-setup, offline-capable, and producing shareable single-file HTML reports — ideal for quick audits, CI pipelines, and open-source projects.
 
 ## 💎 What Makes CodeVista Unique
 
 1. **Zero dependencies** — pure Python stdlib, no pip install headaches
 2. **Single HTML output** — share one file, works offline forever, no server
-3. **Deep code smell detection** — 19 smell categories with AST-level analysis, not just regex
+3. **Code smell detection** — 19 smell categories with AST-level Python analysis
 4. **Architecture pattern detection** — identifies 12+ patterns from structure + code
 5. **Code age × risk correlation** — statistical analysis of age, complexity, and churn
 6. **Multi-format export** — HTML, JSON, Markdown, SARIF, CSV, YAML, PDF
