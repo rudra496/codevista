@@ -32,9 +32,9 @@ class DecayDetector:
         try:
             result = subprocess.run(
                 ["git"] + args,
-                cwd=self.repo_path, capture_output=True, text=True, timeout=30
+                cwd=self.repo_path, capture_output=True, timeout=30
             )
-            return result.stdout.strip()
+            return result.stdout.decode('utf-8', errors='replace').strip()
         except Exception:
             return ""
 
