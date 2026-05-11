@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeVista — AI Code Analysis & Security Scanner | 65+ Languages</title>
+    <meta name="description" content="CodeVista is a free, zero-dependency code analysis and security scanner. Generate stunning HTML reports, detect code smells, architectural decay, and security issues across 65+ languages. Install with pip.">
+    <meta name="keywords" content="CodeVista, code analysis tool, static analysis, security scanner, code quality metrics, code smells detector, architecture detection, health score, technical debt, SARIF report, CI/CD integration, lint rules, code fingerprinting, dependency graph, Python code analysis, code visualization, code review tool, open source code scanner">
+    <meta name="author" content="Rudra Sarker">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://rudra496.github.io/codevista/">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="CodeVista — AI Code Analysis & Security Scanner">
+    <meta property="og:description" content="Free, zero-dependency code analysis and security scanner. 65+ languages, 36 lint rules, DNA fingerprinting, architecture insights, and stunning HTML reports.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://rudra496.github.io/codevista/">
+    <meta property="og:site_name" content="CodeVista">
+    <meta property="og:locale" content="en_US">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="CodeVista — AI Code Analysis & Security Scanner">
+    <meta name="twitter:description" content="Free code analysis and security scanner. 65+ languages, code smells, architecture decay detection, and stunning HTML reports.">
+    <meta name="twitter:creator" content="@rudra496">
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F50D;</text></svg>">
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "CodeVista",
+        "description": "Free, zero-dependency code analysis and security scanner that generates stunning single-page HTML reports. Supports 65+ languages, 36 lint rules, DNA fingerprinting, and architecture decay detection.",
+        "url": "https://rudra496.github.io/codevista/",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Windows, macOS, Linux",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "author": {
+            "@type": "Person",
+            "name": "Rudra Sarker",
+            "url": "https://github.com/rudra496"
+        },
+        "license": "https://opensource.org/licenses/MIT",
+        "codeRepository": "https://github.com/rudra496/codevista",
+        "programmingLanguage": "Python",
+        "featureList": [
+            "65+ language support",
+            "36 lint rules",
+            "DNA fingerprinting",
+            "Architecture decay detection",
+            "Code smell detection",
+            "Security scanning",
+            "HTML report generation",
+            "SARIF output",
+            "CI/CD integration",
+            "Dependency analysis"
+        ]
+    }
+    </script>
+
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --bg: #0f172a;
+            --bg-card: #1e293b;
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --green: #22c55e;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+        .hero { text-align: center; padding: 80px 20px 60px; background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 50%, #0c4a6e 100%); }
+        .hero h1 { font-size: 3rem; margin-bottom: 16px; }
+        .hero p { font-size: 1.25rem; color: var(--text-muted); max-width: 600px; margin: 0 auto 32px; }
+        .hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+        .btn { display: inline-block; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 1rem; transition: transform 0.15s, box-shadow 0.15s; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-outline { border: 2px solid var(--border); color: var(--text); }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+        .section { padding: 60px 0; }
+        .section h2 { font-size: 2rem; margin-bottom: 32px; text-align: center; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+        .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; }
+        .card:hover { border-color: var(--primary); }
+        .card h3 { margin-bottom: 12px; }
+        .card p { color: var(--text-muted); }
+        .install-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; text-align: center; max-width: 600px; margin: 0 auto; }
+        .install-box code { display: block; background: #0f172a; padding: 16px; border-radius: 8px; margin-top: 12px; font-family: 'Fira Code', monospace; font-size: 1rem; color: var(--green); user-select: all; }
+        .stats-row { display: flex; justify-content: center; gap: 48px; flex-wrap: wrap; margin-top: 32px; }
+        .stat { text-align: center; }
+        .stat-value { font-size: 2rem; font-weight: 700; color: var(--primary); }
+        .stat-label { color: var(--text-muted); }
+        footer { text-align: center; padding: 40px 20px; border-top: 1px solid var(--border); color: var(--text-muted); }
+        footer a { color: var(--primary); text-decoration: none; }
+    </style>
+</head>
+<body>
+<div class="hero">
+    <h1>CodeVista</h1>
+    <p>AI-powered code analysis and security scanner. Understand complex codebases instantly with dependency graphs, architecture insights, and quality metrics.</p>
+    <div class="hero-buttons">
+        <a href="https://github.com/rudra496/codevista" class="btn btn-primary">GitHub</a>
+        <a href="https://github.com/rudra496/codevista#installation" class="btn btn-outline">Get Started</a>
+        <a href="https://pypi.org/project/codevista/" class="btn btn-outline">PyPI</a>
+    </div>
+    <div class="stats-row">
+        <div class="stat"><div class="stat-value">65+</div><div class="stat-label">Languages</div></div>
+        <div class="stat"><div class="stat-value">36</div><div class="stat-label">Lint Rules</div></div>
+        <div class="stat"><div class="stat-value">190+</div><div class="stat-label">Tests</div></div>
+        <div class="stat"><div class="stat-value">0</div><div class="stat-label">Dependencies</div></div>
+    </div>
+</div>
+<div class="container">
+    <div class="section">
+        <h2>Features</h2>
+        <div class="grid">
+            <div class="card"><h3>Code Analysis</h3><p>Static analysis across 65+ programming languages with zero external dependencies.</p></div>
+            <div class="card"><h3>Security Scanner</h3><p>Detect security vulnerabilities, hardcoded secrets, and potential backdoors in your codebase.</p></div>
+            <div class="card"><h3>DNA Fingerprinting</h3><p>Unique code fingerprinting to track code changes and identify patterns across your project.</p></div>
+            <div class="card"><h3>Architecture Detection</h3><p>Automatic detection of architectural decay and dependency graph visualization.</p></div>
+            <div class="card"><h3>Code Smells</h3><p>Identify code smells, technical debt, and areas needing refactoring with actionable insights.</p></div>
+            <div class="card"><h3>Stunning Reports</h3><p>Generate single-page HTML reports with metrics, charts, and SARIF output for CI/CD integration.</p></div>
+        </div>
+    </div>
+    <div class="section">
+        <h2>Install CodeVista</h2>
+        <div class="install-box">
+            <p>Install from PyPI</p>
+            <code>pip install codevista</code>
+        </div>
+    </div>
+</div>
+<footer>
+    <p><strong>CodeVista</strong> — AI Code Analysis & Security Scanner — MIT License<br>
+    Built by <a href="https://rudra496.github.io/site">Rudra Sarker</a> &middot;
+    <a href="https://github.com/rudra496/codevista">GitHub</a> &middot;
+    <a href="https://pypi.org/project/codevista/">PyPI</a></p>
+</footer>
+</body>
+</html>
